@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,51 +27,67 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 private fun Test() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "TopAppBar title")
+                },
+                navigationIcon = {
+                    IconButton(onClick = {}) {
+                        Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            BottomNavigation {
+                BottomNavigationItem(
+                    icon = { Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)},
+                    label = {Text("Favourite")},
+                    selected = false,
+                    onClick = { /*TODO*/ }
+                )
+                BottomNavigationItem(
+                    icon = { Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)},
+                    label = {Text("Favourite")},
+                    selected = false,
+                    onClick = { /*TODO*/ }
+                )
+                BottomNavigationItem(
+                    icon = { Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)},
+                    label = {Text("Favourite")},
+                    selected = false,
+                    onClick = { /*TODO*/ }
+                )
+            }
+        },
+        drawerContent = {
+            NavigationRail {
+                NavigationRailItem(
+                    selected = false,
+                    onClick = { /*TODO*/ },
+                    icon = { Icon(imageVector = Icons.Filled.Search, contentDescription = null)},
+                    label = { Text(text = "Search")}
+                )
+                NavigationRailItem(
+                    selected = false,
+                    onClick = { /*TODO*/ },
+                    icon = { Icon(imageVector = Icons.Filled.Add, contentDescription = null)},
+                    label = { Text(text = "Add")}
+                )
+                NavigationRailItem(
+                    selected = false,
+                    onClick = { /*TODO*/ },
+                    icon = { Icon(imageVector = Icons.Filled.Settings, contentDescription = null)},
+                    label = { Text(text = "Settings")}
+                )
+            }
+        }
     ) {
-        Example3()
+        Text(
+            modifier = Modifier.padding(it),
+            text = "This is scaffold content"
+        )
     }
-}
-
-@Composable
-private fun Example1() {
-    OutlinedButton(onClick = { /*TODO*/ }) {
-        Text(text = "Hello World")
-    }
-}
-
-@Composable
-private fun Example2() {
-    TextField(
-        value = "Value",
-        onValueChange = { },
-        label = {
-            Text(text = "Label")
-        }
-    )
-}
-
-@Composable
-private fun Example3() {
-    AlertDialog(
-        onDismissRequest = { },
-        confirmButton = {
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text = "Yes", color = Color.Black)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { /*TODO*/ }) {
-                Text("No", color = Color.Black)
-            }
-        },
-        title = {
-            Text("Are you sure?")
-        },
-        text = {
-            Text(text = "Do you want to delete this file?")
-        }
-    )
 }
