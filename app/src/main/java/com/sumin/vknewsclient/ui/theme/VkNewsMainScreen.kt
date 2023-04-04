@@ -13,7 +13,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen() {
-    val snackbarHostState = SnackbarHostState()
+    Log.d("MainScreen", "recomposition")
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
+    Log.d("MainScreen", snackbarHostState.currentSnackbarData.toString())
     val scope = rememberCoroutineScope()
     val fabIsVisible = remember {
         mutableStateOf(true)
@@ -33,6 +37,7 @@ fun MainScreen() {
                                 actionLabel = "Hide FAB",
                                 duration = SnackbarDuration.Long
                             )
+                            Log.d("MainScreen", "showing snackbar")
                             if (action == SnackbarResult.ActionPerformed) {
                                 fabIsVisible.value = false
                             }
