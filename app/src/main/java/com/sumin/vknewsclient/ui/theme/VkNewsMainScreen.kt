@@ -1,26 +1,22 @@
 package com.sumin.vknewsclient.ui.theme
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.sumin.vknewsclient.MainViewModel
 import com.sumin.vknewsclient.domain.FeedPost
-import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: MainViewModel) {
 
-    val feedPost = remember {
-        mutableStateOf(FeedPost())
-    }
     Scaffold(
         bottomBar = {
             BottomNavigation {
@@ -47,22 +43,14 @@ fun MainScreen() {
             }
         }
     ) {
+        val feedPost = viewModel.feedPost.observeAsState(FeedPost())
         PostCard(
             modifier = Modifier.padding(8.dp),
             feedPost = feedPost.value,
-            onStatisticsItemClickListener = { newItem ->
-                val oldStatistics = feedPost.value.statistics
-                val newStatistics = oldStatistics.toMutableList().apply {
-                    replaceAll { oldItem ->
-                        if (oldItem.type == newItem.type) {
-                            oldItem.copy(count = oldItem.count + 1)
-                        } else {
-                            oldItem
-                        }
-                    }
-                }
-                feedPost.value = feedPost.value.copy(statistics = newStatistics)
-            }
+            onLikeClickListener = viewModel::updateCount,
+            onShareClickListener = viewModel::updateCount,
+            onViewsClickListener = viewModel::updateCount,
+            onCommentClickListener = viewModel::updateCount
         )
     }
 }
