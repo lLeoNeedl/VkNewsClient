@@ -29,7 +29,7 @@ fun PostCard(
     onLikeClickListener: (StatisticsItem) -> Unit,
     onShareClickListener: (StatisticsItem) -> Unit,
     onViewsClickListener: (StatisticsItem) -> Unit,
-    onCommentClickListener: (StatisticsItem) -> Unit
+    onCommentClickListener: () -> Unit
 ) {
     Card(
         modifier = modifier
@@ -104,7 +104,7 @@ private fun Statistics(
     onLikeClickListener: (StatisticsItem) -> Unit,
     onShareClickListener: (StatisticsItem) -> Unit,
     onViewsClickListener: (StatisticsItem) -> Unit,
-    onCommentClickListener: (StatisticsItem) -> Unit
+    onCommentClickListener: () -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Row(modifier = Modifier.weight(1F)) {
@@ -135,7 +135,7 @@ private fun Statistics(
                 iconResId = R.drawable.ic_comment,
                 text = commentsItem.count.toString(),
                 onItemClickListener = {
-                    onCommentClickListener(commentsItem)
+                    onCommentClickListener()
                 }
             )
 
