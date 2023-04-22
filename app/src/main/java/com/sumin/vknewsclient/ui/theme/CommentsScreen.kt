@@ -36,8 +36,7 @@ import com.sumin.vknewsclient.domain.PostComment
 @Composable
 fun CommentsScreen(
     onBackPressed: () -> Unit,
-    feedPost: FeedPost,
-    text: String
+    feedPost: FeedPost
 ) {
     val viewModel: CommentsViewModel = viewModel(
         factory = CommentsViewModelFactory(feedPost)
@@ -51,7 +50,7 @@ fun CommentsScreen(
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = "Comments for FeedPost Id: ${currentState.feedPost.id}")
+                        Text(text = "Comments for FeedPost Id: ${currentState.feedPost.contentText}")
                     },
                     navigationIcon = {
                         IconButton(onClick = { onBackPressed() }) {
@@ -78,7 +77,7 @@ fun CommentsScreen(
                     items = currentState.comments,
                     key = { it.id }
                 ) { comment ->
-                    CommentItem(comment = comment, commentText = text)
+                    CommentItem(comment = comment)
                 }
             }
         }
@@ -88,8 +87,7 @@ fun CommentsScreen(
 
 @Composable
 private fun CommentItem(
-    comment: PostComment,
-    commentText: String
+    comment: PostComment
 ) {
     Row(
         modifier = Modifier
@@ -113,7 +111,7 @@ private fun CommentItem(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = commentText,
+                text = comment.commentText,
                 color = MaterialTheme.colors.onPrimary,
                 fontSize = 12.sp
             )
@@ -131,6 +129,6 @@ private fun CommentItem(
 @Composable
 private fun PreviewComment() {
     VkNewsClientTheme {
-        CommentItem(comment = PostComment(id = 0), commentText = "Text")
+        CommentItem(comment = PostComment(id = 0))
     }
 }
