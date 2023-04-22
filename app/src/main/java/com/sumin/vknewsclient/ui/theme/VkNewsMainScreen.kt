@@ -68,12 +68,13 @@ fun MainScreen() {
                     }
                 )
             },
-            commentsScreenContent = { feedPost ->
+            commentsScreenContent = { feedPost, text ->
                 CommentsScreen(
                     onBackPressed = {
                         navigationState.navHostController.popBackStack()
                     },
-                    feedPost = feedPost
+                    feedPost = feedPost,
+                    text = text
                 )
             },
             favouriteScreenContent = { TextCounter(name = "Favourite") },

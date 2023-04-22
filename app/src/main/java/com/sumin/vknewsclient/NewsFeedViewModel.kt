@@ -7,11 +7,16 @@ import com.sumin.vknewsclient.domain.FeedPost
 import com.sumin.vknewsclient.domain.StatisticsItem
 import com.sumin.vknewsclient.ui.theme.NewsFeedScreenState
 
-class NewsFeedViewModel: ViewModel() {
+class NewsFeedViewModel : ViewModel() {
 
     private val sourceList = mutableListOf<FeedPost>().apply {
         repeat(10) {
-            add(FeedPost(id = it))
+            add(
+                FeedPost(
+                    id = it,
+                    contentText = "Content $it"
+                )
+            )
         }
     }
 
