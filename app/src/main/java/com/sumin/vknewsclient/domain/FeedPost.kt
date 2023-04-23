@@ -40,7 +40,6 @@ data class FeedPost(
             override fun put(bundle: Bundle, key: String, value: FeedPost) {
                 bundle.putParcelable(key, value)
             }
-
         }
     }
 }
