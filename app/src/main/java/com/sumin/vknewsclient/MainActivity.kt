@@ -5,8 +5,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import com.sumin.vknewsclient.ui.theme.ActivityResultTest
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.sumin.vknewsclient.ui.theme.MainScreen
 import com.sumin.vknewsclient.ui.theme.VkNewsClientTheme
 import com.vk.api.sdk.VK
@@ -19,22 +23,34 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             VkNewsClientTheme {
+                val someState = remember {
+                    mutableStateOf(true)
+                }
+                Log.d("MyMainActivity", "Recomposition: {${someState.value}}")
                 val launcher = rememberLauncherForActivityResult(
-                    contract = VK.getVKAuthActivityResultContract(),
-                    onResult = {
-                        when (it) {
-                            is VKAuthenticationResult.Success -> {
-                                Log.d("MainActivity", "Success auth")
-                            }
+                    contract = VK.getVKAuthActivityResultContract()
+                )
+                {
+                    when (it) {
+                        is VKAuthenticationResult.Success -> {
+                            Log.d("MyMainActivity", "Success auth")
+                        }
 
-                            is VKAuthenticationResult.Failed -> {
-                                Log.d("MainActivity", "Failed auth")
-                            }
+                        is VKAuthenticationResult.Failed -> {
+                            Log.d("MyMainActivity", "Failed auth")
                         }
                     }
-                )
-                launcher.launch(listOf(VKScope.WALL))
-                MainScreen()
+                }
+                LaunchedEffect(key1 = someState.value) {
+//                    launcher.launch(listOf(VKScope.WALL))
+                    Log.d("MyMainActivity", "LaunchedEffect")
+                }
+                SideEffect {
+                    Log.d("MyMainActivity", "SideEffect")
+                }
+                Button(onClick = { someState.value = !someState.value }) {
+                    Text(text = "Change state")
+                }
             }
         }
     }
