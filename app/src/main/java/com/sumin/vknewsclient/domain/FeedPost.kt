@@ -6,7 +6,6 @@ import androidx.navigation.NavType
 import com.google.gson.Gson
 import com.sumin.vknewsclient.R
 import kotlinx.parcelize.Parcelize
-import java.util.LinkedList
 
 @Parcelize
 data class FeedPost(

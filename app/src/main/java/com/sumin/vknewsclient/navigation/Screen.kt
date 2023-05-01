@@ -2,7 +2,6 @@ package com.sumin.vknewsclient.navigation
 
 import android.net.Uri
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.sumin.vknewsclient.domain.FeedPost
 
 sealed class Screen(
