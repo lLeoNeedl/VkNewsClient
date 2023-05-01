@@ -20,6 +20,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         val storage = VKPreferencesKeyValueStorage(application)
         val token = VKAccessToken.restore(storage)
         val loggedIn = token != null && token.isValid
+        Log.d("MyMainViewModel", "Token: ${token?.accessToken}")
         _authState.value = if (loggedIn) {
             AuthState.Authorized
         } else {
