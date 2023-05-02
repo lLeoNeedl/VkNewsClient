@@ -16,7 +16,7 @@ data class FeedPost(
     val contentText: String,
     val contentImageUrl: String?,
     val statistics: List<StatisticsItem>,
-    val isFavourite: Boolean = Random.nextBoolean()
+    val isFavourite: Boolean
 ) : Parcelable {
 
     companion object {

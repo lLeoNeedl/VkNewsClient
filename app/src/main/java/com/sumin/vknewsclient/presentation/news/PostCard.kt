@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,8 @@ import com.sumin.vknewsclient.R
 import com.sumin.vknewsclient.domain.FeedPost
 import com.sumin.vknewsclient.domain.StatisticType
 import com.sumin.vknewsclient.domain.StatisticsItem
+import com.sumin.vknewsclient.ui.theme.DarkRed
+import kotlin.random.Random
 
 @Composable
 fun PostCard(
@@ -65,7 +68,8 @@ fun PostCard(
                 onLikeClickListener = onLikeClickListener,
                 onShareClickListener = onShareClickListener,
                 onViewsClickListener = onViewsClickListener,
-                onCommentClickListener = onCommentClickListener
+                onCommentClickListener = onCommentClickListener,
+                isFavourite = feedPost.isFavourite
             )
         }
     }
@@ -115,7 +119,8 @@ private fun Statistics(
     onLikeClickListener: (StatisticsItem) -> Unit,
     onShareClickListener: (StatisticsItem) -> Unit,
     onViewsClickListener: (StatisticsItem) -> Unit,
-    onCommentClickListener: () -> Unit
+    onCommentClickListener: () -> Unit,
+    isFavourite: Boolean
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Row(modifier = Modifier.weight(1F)) {
@@ -152,11 +157,12 @@ private fun Statistics(
 
             val likesItem = statistics.getItemByType(StatisticType.LIKES)
             IconWithText(
-                iconResId = R.drawable.ic_like,
+                iconResId = if (isFavourite) R.drawable.ic_like_set else R.drawable.ic_like,
                 text = formatStatisticCount(likesItem.count),
                 onItemClickListener = {
                     onLikeClickListener(likesItem)
-                }
+                },
+                tint = if (isFavourite) DarkRed else MaterialTheme.colors.onSecondary
             )
         }
     }
@@ -180,17 +186,20 @@ private fun List<StatisticsItem>.getItemByType(type: StatisticType): StatisticsI
 private fun IconWithText(
     iconResId: Int,
     text: String,
-    onItemClickListener: () -> Unit
+    onItemClickListener: () -> Unit,
+    tint: Color = MaterialTheme.colors.onSecondary
 ) {
     Row(
         modifier = Modifier.clickable {
             onItemClickListener()
-        }
+        },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
+            modifier = Modifier.size(20.dp),
             painter = painterResource(id = iconResId),
             contentDescription = null,
-            tint = MaterialTheme.colors.onSecondary
+            tint = tint
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
