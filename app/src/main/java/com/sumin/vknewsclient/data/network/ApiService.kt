@@ -10,4 +10,11 @@ interface ApiService {
     suspend fun loadRecommendations(
         @Query("access_token") token: String
     ): NewsFeedResponseDto
+
+    @GET("likes.add?v=5.131&type=post")
+    suspend fun addLike(
+        @Query("access_token") token: String,
+        @Query("owner_id") ownerId: Long,
+        @Query("item_id") postId: Long
+    )
 }
