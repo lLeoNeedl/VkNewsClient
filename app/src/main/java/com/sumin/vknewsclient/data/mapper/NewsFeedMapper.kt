@@ -4,7 +4,6 @@ import com.sumin.vknewsclient.data.model.NewsFeedResponseDto
 import com.sumin.vknewsclient.domain.FeedPost
 import com.sumin.vknewsclient.domain.StatisticType
 import com.sumin.vknewsclient.domain.StatisticsItem
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -21,6 +20,7 @@ class NewsFeedMapper {
             val group = groups.find { it.id == post.communityId.absoluteValue } ?: break
             val feedPost = FeedPost(
                 id = post.id,
+                communityId = post.communityId,
                 communityName = group.name,
                 publicationDate = mapTimestampToDate(post.date * 1000),
                 communityImageUrl = group.imageUrl,
@@ -32,7 +32,7 @@ class NewsFeedMapper {
                     StatisticsItem(type = StatisticType.SHARES, post.reposts.count),
                     StatisticsItem(type = StatisticType.COMMENTS, post.comments.count)
                 ),
-                isFavourite = post.isFavourite
+                isLiked = post.likes.userLikes > 0
             )
             result.add(feedPost)
         }

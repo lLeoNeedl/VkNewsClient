@@ -32,7 +32,6 @@ import com.sumin.vknewsclient.domain.FeedPost
 import com.sumin.vknewsclient.domain.StatisticType
 import com.sumin.vknewsclient.domain.StatisticsItem
 import com.sumin.vknewsclient.ui.theme.DarkRed
-import kotlin.random.Random
 
 @Composable
 fun PostCard(
@@ -69,7 +68,7 @@ fun PostCard(
                 onShareClickListener = onShareClickListener,
                 onViewsClickListener = onViewsClickListener,
                 onCommentClickListener = onCommentClickListener,
-                isFavourite = feedPost.isFavourite
+                isFavourite = feedPost.isLiked
             )
         }
     }
