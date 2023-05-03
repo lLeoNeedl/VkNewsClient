@@ -49,8 +49,8 @@ class NewsFeedRepository(application: Application) {
             add(StatisticsItem(type = StatisticType.LIKES, newLikesCount))
         }
         val newPost = feedPost.copy(statistics = newStatistics, isLiked = !feedPost.isLiked)
-        val postIndex = feedPosts.indexOf(feedPost)
-        _feedPosts.add(postIndex, newPost)
+        val postIndex = _feedPosts.indexOf(feedPost)
+        _feedPosts[postIndex] = newPost
     }
 
     private fun getAccessToken(): String {
