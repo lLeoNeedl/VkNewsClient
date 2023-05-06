@@ -1,5 +1,6 @@
 package com.sumin.vknewsclient.data.network
 
+import com.sumin.vknewsclient.data.model.DeletePostResponseDto
 import com.sumin.vknewsclient.data.model.LikesCountResponseDto
 import com.sumin.vknewsclient.data.model.NewsFeedResponseDto
 import retrofit2.http.GET
@@ -31,4 +32,11 @@ interface ApiService {
         @Query("owner_id") ownerId: Long,
         @Query("item_id") postId: Long
     ): LikesCountResponseDto
+
+    @GET("newsfeed.ignoreItem?v=5.131&type=wall")
+    suspend fun removePost(
+        @Query("access_token") token: String,
+        @Query("owner_id") ownerId: Long,
+        @Query("item_id") postId: Long
+    )
 }

@@ -2,6 +2,7 @@ package com.sumin.vknewsclient.data.repository
 
 import android.app.Application
 import com.sumin.vknewsclient.data.mapper.NewsFeedMapper
+import com.sumin.vknewsclient.data.model.DeletePostResponseDto
 import com.sumin.vknewsclient.data.network.ApiFactory
 import com.sumin.vknewsclient.domain.FeedPost
 import com.sumin.vknewsclient.domain.StatisticType
@@ -61,6 +62,15 @@ class NewsFeedRepository(application: Application) {
         val newPost = feedPost.copy(statistics = newStatistics, isLiked = !feedPost.isLiked)
         val postIndex = _feedPosts.indexOf(feedPost)
         _feedPosts[postIndex] = newPost
+    }
+
+    suspend fun removePost(feedPost: FeedPost) {
+        apiService.removePost(
+            token = getAccessToken(),
+            ownerId = feedPost.communityId,
+            postId = feedPost.id
+        )
+        _feedPosts.remove(feedPost)
     }
 
     private fun getAccessToken(): String {
