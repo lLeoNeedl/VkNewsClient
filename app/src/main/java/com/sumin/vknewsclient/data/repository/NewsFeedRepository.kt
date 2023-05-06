@@ -5,6 +5,7 @@ import com.sumin.vknewsclient.data.mapper.NewsFeedMapper
 import com.sumin.vknewsclient.data.model.DeletePostResponseDto
 import com.sumin.vknewsclient.data.network.ApiFactory
 import com.sumin.vknewsclient.domain.FeedPost
+import com.sumin.vknewsclient.domain.PostComment
 import com.sumin.vknewsclient.domain.StatisticType
 import com.sumin.vknewsclient.domain.StatisticsItem
 import com.vk.api.sdk.VKPreferencesKeyValueStorage
@@ -38,6 +39,16 @@ class NewsFeedRepository(application: Application) {
         val posts = mapper.mapResponseToPosts(response)
         _feedPosts.addAll(posts)
         return feedPosts
+    }
+
+    suspend fun getComments(feedPost: FeedPost): List<PostComment> {
+        val comments = apiService.getComments(
+            token = getAccessToken(),
+            ownerId = feedPost.communityId,
+            postId = feedPost.id
+        )
+
+        return mapper.mapResponseToComments(comments)
     }
 
     suspend fun changeLikeStatus(feedPost: FeedPost) {
