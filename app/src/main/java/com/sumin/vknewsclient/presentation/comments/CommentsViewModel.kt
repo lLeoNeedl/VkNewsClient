@@ -1,6 +1,7 @@
 package com.sumin.vknewsclient.presentation.comments
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.sumin.vknewsclient.data.repository.NewsFeedRepository
 import com.sumin.vknewsclient.domain.FeedPost
 import com.sumin.vknewsclient.domain.PostComment
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class CommentsViewModel(
@@ -18,20 +20,14 @@ class CommentsViewModel(
 
     private val repository = NewsFeedRepository(application)
 
-    private val _screenState = MutableLiveData<CommentsScreenState>(CommentsScreenState.Initial)
-    val screenState: LiveData<CommentsScreenState> = _screenState
-
-    init {
-        loadComments(feedPost)
+    val screenState = repository.getComments(feedPost).map {
+        CommentsScreenState.Comments(
+            feedPost = feedPost,
+            comments = it
+        )
     }
 
-    private fun loadComments(feedPost: FeedPost) {
-        viewModelScope.launch {
-            val comments = repository.getComments(feedPost)
-            _screenState.value = CommentsScreenState.Comments(
-                feedPost = feedPost,
-                comments = comments
-            )
-        }
+    init {
+        Log.d("CommentsViewModel", "init")
     }
 }
