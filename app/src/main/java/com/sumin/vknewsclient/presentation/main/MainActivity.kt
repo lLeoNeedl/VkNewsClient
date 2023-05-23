@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     contract = VK.getVKAuthActivityResultContract()
                 )
                 {
-                    viewModel.performAuthResult(it)
+                    viewModel.performAuthResult()
                 }
                 when (authState.value) {
                     is AuthState.Authorized -> {

@@ -7,6 +7,7 @@ import com.sumin.vknewsclient.domain.FeedPost
 import com.sumin.vknewsclient.domain.PostComment
 import com.sumin.vknewsclient.domain.StatisticType
 import com.sumin.vknewsclient.domain.StatisticsItem
+import com.sumin.vknewsclient.domain.auth_state.AuthState
 import com.sumin.vknewsclient.extensions.mergeWith
 import com.vk.api.sdk.VKPreferencesKeyValueStorage
 import com.vk.api.sdk.auth.VKAccessToken
@@ -23,7 +24,8 @@ import kotlinx.coroutines.flow.stateIn
 class NewsFeedRepository(application: Application) {
 
     private val storage = VKPreferencesKeyValueStorage(application)
-    private val token = VKAccessToken.restore(storage)
+    private val token
+        get() = VKAccessToken.restore(storage)
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private val nextDataNeededEvents = MutableSharedFlow<Unit>(replay = 1)
@@ -63,6 +65,22 @@ class NewsFeedRepository(application: Application) {
 
     private var nextFrom: String? = null
 
+    private val checkAuthStateEvents = MutableSharedFlow<Unit>(replay = 1)
+
+    val authStateFlow = flow {
+        checkAuthStateEvents.emit(Unit)
+        checkAuthStateEvents.collect {
+            val currentToken = token
+            val logged = currentToken != null && currentToken.isValid
+            val authState = if (logged) AuthState.Authorized else AuthState.NotAuthorized
+            emit(authState)
+        }
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.Lazily,
+        initialValue = AuthState.Initial
+    )
+
     val recommendations = loadedListFlow
         .mergeWith(refreshedListFlow)
         .stateIn(
@@ -73,6 +91,10 @@ class NewsFeedRepository(application: Application) {
 
     suspend fun loadNextData() {
         nextDataNeededEvents.emit(Unit)
+    }
+
+    suspend fun checkAuthState() {
+        checkAuthStateEvents.emit(Unit)
     }
 
     fun getComments(feedPost: FeedPost) = flow {
