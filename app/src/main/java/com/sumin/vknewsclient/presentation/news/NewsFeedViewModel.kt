@@ -3,16 +3,16 @@ package com.sumin.vknewsclient.presentation.news
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.sumin.vknewsclient.data.repository.NewsFeedRepository
-import com.sumin.vknewsclient.domain.FeedPost
-import com.sumin.vknewsclient.domain.StatisticsItem
+import com.sumin.vknewsclient.data.repository.NewsFeedRepositoryImpl
+import com.sumin.vknewsclient.domain.entity.FeedPost
+import com.sumin.vknewsclient.domain.usecases.ChangeLikeStatusUseCase
+import com.sumin.vknewsclient.domain.usecases.DeletePostUseCase
+import com.sumin.vknewsclient.domain.usecases.GetRecommendationsUseCase
+import com.sumin.vknewsclient.domain.usecases.LoadNextDataUseCase
 import com.sumin.vknewsclient.extensions.mergeWith
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -24,11 +24,17 @@ class NewsFeedViewModel(application: Application) : AndroidViewModel(application
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
         Log.d("NewsFeedViewModel", "Exception caught by exception handler")
     }
-    private val repository = NewsFeedRepository(application)
+    private val repository = NewsFeedRepositoryImpl(application)
 
-    private val recommendationsFlow = repository.recommendations
+    private val getRecommendationsUseCase = GetRecommendationsUseCase(repository)
+    private val loadNextDataUseCase = LoadNextDataUseCase(repository)
+    private val changeLikeStatusUseCase = ChangeLikeStatusUseCase(repository)
+    private val deletePostUseCase = DeletePostUseCase(repository)
+
+    private val recommendationsFlow = getRecommendationsUseCase()
 
     private val loadNextDataEvents = MutableSharedFlow<Unit>()
+
     private val loadNextDataFlow = flow {
         loadNextDataEvents.collect {
             emit(
@@ -49,19 +55,19 @@ class NewsFeedViewModel(application: Application) : AndroidViewModel(application
     fun loadNextRecommendations() {
         viewModelScope.launch {
             loadNextDataEvents.emit(Unit)
-            repository.loadNextData()
+            loadNextDataUseCase()
         }
     }
 
     fun changeLikeStatus(feedPost: FeedPost) {
         viewModelScope.launch(exceptionHandler) {
-            repository.changeLikeStatus(feedPost)
+            changeLikeStatusUseCase(feedPost)
         }
     }
 
     fun remove(feedPost: FeedPost) {
         viewModelScope.launch(exceptionHandler) {
-            repository.removePost(feedPost)
+            deletePostUseCase(feedPost)
         }
     }
 }

@@ -2,7 +2,7 @@ package com.sumin.vknewsclient.data.repository
 
 import android.app.Application
 import android.util.Log
-import com.sumin.vknewsclient.domain.auth_state.AuthState
+import com.sumin.vknewsclient.domain.entity.AuthState
 import com.vk.api.sdk.VKPreferencesKeyValueStorage
 import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthenticationResult

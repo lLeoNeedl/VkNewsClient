@@ -1,4 +1,4 @@
-package com.sumin.vknewsclient.domain.auth_state
+package com.sumin.vknewsclient.domain.entity
 
 sealed class AuthState {
 
