@@ -3,6 +3,7 @@ package com.sumin.vknewsclient.data.repository
 import android.app.Application
 import com.sumin.vknewsclient.data.mapper.NewsFeedMapper
 import com.sumin.vknewsclient.data.network.ApiFactory
+import com.sumin.vknewsclient.data.network.ApiService
 import com.sumin.vknewsclient.domain.entity.FeedPost
 import com.sumin.vknewsclient.domain.entity.StatisticType
 import com.sumin.vknewsclient.domain.entity.StatisticsItem
@@ -20,10 +21,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-class NewsFeedRepositoryImpl(application: Application) : NewsFeedRepository {
+class NewsFeedRepositoryImpl @Inject constructor(
+    application: Application,
+    private val apiService: ApiService,
+    private val mapper: NewsFeedMapper,
+    private val storage: VKPreferencesKeyValueStorage
+) : NewsFeedRepository {
 
-    private val storage = VKPreferencesKeyValueStorage(application)
     private val token
         get() = VKAccessToken.restore(storage)
 
@@ -55,9 +61,6 @@ class NewsFeedRepositoryImpl(application: Application) : NewsFeedRepository {
             delay(RETRY_TIMEOUT_MILLIS)
             true
         }
-
-    private val apiService = ApiFactory.apiService
-    private val mapper = NewsFeedMapper()
 
     private val _feedPosts = mutableListOf<FeedPost>()
     private val feedPosts: List<FeedPost>
