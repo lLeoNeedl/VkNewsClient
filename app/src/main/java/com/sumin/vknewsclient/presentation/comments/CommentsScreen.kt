@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,20 +23,31 @@ import com.sumin.vknewsclient.domain.entity.FeedPost
 import com.sumin.vknewsclient.domain.entity.PostComment
 import com.sumin.vknewsclient.presentation.NewsFeedApplication
 import com.sumin.vknewsclient.presentation.ViewModelFactory
+import com.sumin.vknewsclient.presentation.getApplicationComponent
 
 @Composable
 fun CommentsScreen(
     onBackPressed: () -> Unit,
     feedPost: FeedPost,
 ) {
-    val component =
-        (LocalContext.current.applicationContext as NewsFeedApplication)
-            .component
-            .getCommentsScreenComponentFactory()
-            .create(feedPost)
+    val component = getApplicationComponent()
+        .getCommentsScreenComponentFactory()
+        .create(feedPost)
 
     val viewModel: CommentsViewModel = viewModel(factory = component.getViewModelFactory())
     val screenState = viewModel.screenState.collectAsState(CommentsScreenState.Initial)
+
+    CommentsScreenContent(
+        onBackPressed = onBackPressed,
+        screenState = screenState
+    )
+}
+
+@Composable
+private fun CommentsScreenContent(
+    onBackPressed: () -> Unit,
+    screenState: State<CommentsScreenState>
+) {
     val currentState = screenState.value
 
     if (currentState is CommentsScreenState.Comments) {
